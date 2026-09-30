@@ -1,0 +1,28 @@
+{
+  "name": "@local/dsh-ask-mode",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Ask mode: read-only Q&A sessions with a create-new-only deliverable tool and a composer dock toggle",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/longhao666666/dsh-ask-mode.git"
+  },
+  "exports": {
+    ".": "./host.js",
+    "./client": "./client.js"
+  },
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    },
+    "client": {
+      "platform": "web",
+      "immediately": true,
+      "inject": [
+        "@deepseek-ai/dsh-client-ui-conversation"
+      ]
+    }
+  }
+}

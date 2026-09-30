@@ -1,0 +1,6 @@
+# Ordered patch over the profile composition.
+# A bundle patch is a list of rows; `insert:` adds new rows.
+# Entry points are decided by package.json `exports` + `dsh.client`, never here.
+- insert:
+    - id: ask-mode
+      name: '@local/dsh-ask-mode'
