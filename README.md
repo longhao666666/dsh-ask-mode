@@ -1,14 +1,33 @@
+<div align="center">
+
 # dsh-ask-mode
 
-DeepSeek Harness（DSH 桌面版）插件：在会话头部增加「咨询模式」徽标，一键把当前会话切成**只读问答**——可以查资料、搜索、读代码和文档，但不能修改任何已有内容；需要产出时只能**新建** txt / markdown / docx 文档。
+**会话内一键切换「咨询模式」——只读问答，产出仅限新建文档**
 
-## 功能
+[![version](https://img.shields.io/badge/version-0.1.0-181717)](./package.json)
+[![license](https://img.shields.io/badge/license-MIT-38a834)](./LICENSE)
+[![platform](https://img.shields.io/badge/platform-Windows-0078D6)](https://github.com/longhao666666/dsh-ask-mode)
+[![dsh](https://img.shields.io/badge/DeepSeek_Harness-%3E%3D_0.2.0--rc.2-5D45B0)](https://github.com/longhao666666/dsh-ask-mode)
+[![stars](https://img.shields.io/github/stars/longhao666666/dsh-ask-mode?color=F9C513)](https://github.com/longhao666666/dsh-ask-mode/stargazers)
 
-- **运行时切换**：徽标位于会话头部、「创造模式」标签右侧，随时点击切换，无需新建会话。正在生成时切换，会在本轮结束后生效（徽标显示「咨询中（下一步生效）」）。
-- **只读约束（双重硬限制）**：
-  - 移除修改类工具，仅保留读取类工具；
-  - 沙箱切换为只读模式，对已有文件的写入被直接拒绝。
-- **唯一产出通道 `save_artifact`**：仅允许创建**新**文件（txt / markdown / docx），拒绝覆盖任何已有文件；docx 由简单 markdown（`#` 标题、段落、`-` 列表）生成。适合「帮我整理成 markdown」「生成一份报告」这类需求。
+简体中文 | [English](./README.en.md)
+
+</div>
+
+---
+
+> **零依赖**：常规 Cordis 插件，纯 JS 源码直接加载——无需编译、无需 Token / API Key、无需额外服务。
+
+放心问、随便查——已有内容一个字节都不会被改动；需要产出时，只能**新建** txt / markdown / docx 文档。
+
+## 功能特性
+
+| 能力 | 说明 |
+| --- | --- |
+| 运行时切换 | 徽标位于会话头部、「创造模式」标签右侧，随时点击切换，无需新建会话；正在生成时切换，本轮结束后自动生效（徽标显示「咨询中（下一步生效）」） |
+| 双重只读围栏 | 移除修改类工具，**同时**把沙箱切成只读——对已有文件的写入被直接拒绝；限制全部在 host 侧强制执行，刷新页面也无法绕过 |
+| `save_artifact` | 唯一的产出通道：仅创建**新**文件（txt / markdown / docx），拒绝覆盖任何已有文件；docx 由简单 markdown（`#` 标题、段落、`-` 列表）生成 |
+| 产出场景 | 直接说「整理成 markdown」「生成一份报告」，模型即调用 `save_artifact` 新建文件 |
 
 ## 环境要求
 
@@ -17,7 +36,7 @@ DeepSeek Harness（DSH 桌面版）插件：在会话头部增加「咨询模式
 
 ## 安装
 
-### 方式一：一键脚本
+一键脚本（自动检测 DSH、建立 `node_modules/@local` 链接、写入 profile 配置）：
 
 ```powershell
 git clone https://github.com/longhao666666/dsh-ask-mode.git
@@ -25,9 +44,8 @@ cd dsh-ask-mode
 powershell -ExecutionPolicy Bypass -File .\install.ps1
 ```
 
-脚本会自动检测 DSH、建立 `node_modules/@local` 链接、把插件写进 profile 配置。
-
-### 方式二：手动挂载
+<details>
+<summary>方式二：手动挂载（点开查看）</summary>
 
 ```powershell
 $profile = "$env:USERPROFILE\.dsh\profiles\desktop"
@@ -52,6 +70,8 @@ New-Item -ItemType Junction -Path "$profile\node_modules\@local\dsh-ask-mode" -T
 }
 ```
 
+</details>
+
 两种方式完成后都需**重启 DeepSeek Harness**，并在「插件管理」页确认 `@local/dsh-ask-mode` 已启用。
 
 ## 使用说明
@@ -72,10 +92,13 @@ powershell -ExecutionPolicy Bypass -File .\install.ps1 -Uninstall
 
 重启 DSH 后生效；克隆下来的仓库文件不会被删除。
 
-## 工作原理
+<details>
+<summary>工作原理（点开查看）</summary>
 
 - `host.js`（Node 侧）：模式状态与围栏的真正持有者——切换时动态增删工具、把沙箱切成只读、提供 `save_artifact` 工具，并注册 `/ask-mode` 路由。
-- `client.js`（浏览器侧）：只负责徽标 UI 与状态展示（优先使用槽位宿主传入的投影钩子，回退为轮询 `/ask-mode`），真正的限制都在 host 侧强制执行，刷新页面也无法绕过。
+- `client.js`（浏览器侧）：只负责徽标 UI 与状态展示（优先使用槽位宿主传入的投影钩子，回退为轮询 `/ask-mode`）。
+
+</details>
 
 ## 相关插件
 
